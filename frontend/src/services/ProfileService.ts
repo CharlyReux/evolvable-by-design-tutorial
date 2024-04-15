@@ -14,7 +14,11 @@ class ProfileService {
      * @returns The user object
      */
     async getUserInfo(userId: number): Promise<User> {
-        throw new Error('Not implemented');
+        const response = await axios.get(`${this.baseUrl}/user/${userId}`)
+        if (response.status !== 200) {
+            throw new Error(`Failed to fetch user info: ${response.status}`);
+        }
+        return response.data as User;
     }
 }
 

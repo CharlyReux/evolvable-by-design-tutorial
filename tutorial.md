@@ -165,11 +165,11 @@ npm run dev
 
 On the [page](http://localhost:5173/) You should now see the simple application that you will work on.
 
-## Displaying user informations
+### Displaying user informations
 
 The goal of the application is simply to display user information when entering an id and pressing the button.
 
-A simple UI is provided in [App.tsx](frontend/src/App.tsx), you can look around to see how it works (Note that on line 11, you can see that the url is set up to be `http://localhost:3000`). 
+A simple UI is provided in [App.tsx](frontend/src/App.tsx), you can look around to see how it works. 
 However the calls for the api is not setup yet, so requesting to the backend won't do much for now.
 
 
@@ -187,7 +187,7 @@ async getUserInfo(userId: number): Promise<User> {
 
 Now save, and you should see that the user is indeed displayed in the app.
 
-## Introducing a breaking change
+### Introducing a breaking change
 We will now see how an update in the backend application can break our simple UI.
 
 For some reason, the provider decided to add those changes in its rest API:
@@ -201,39 +201,27 @@ In order to apply the changes, stop the backend, and run the new version of it, 
  npm run dev
  ```
 
-And you should see in your front-end that nothing works anymore
+And you should see in your front-end that nothing works anymore.
 
+In order to fix it, you now have to
+- First, Change the endpoint used in the `getUserInfo()` method from `${this.baseUrl}/users/${userId}` to `${this.baseUrl}/user/${userId}`.
+> The request does not throw an error, but the entire page gets broken, because the field createAt is not available anymore.
+- To fix this, you need to change how the user is displayed, in the (ProfileCard)[frontend/src/Components/ProfileCard.tsx] component, remove the three lines that show the createdAt value(you might as well want to remove the createdAt field in the user model).
 
-
-
-
-
-
-
-
-
-### Introducing a Breaking change
-Now go the back-end application, stop it, and run the following command
-```sh
-git checkout tutorial/broken
-```
-You can then relaunch it with  `./gradlew bootRun`
-
-In the [UI](http://localhost:5173/), try adding a new todo. you should now see that the application does not display the name and is broken.
-That is because we introduced a breaking change in the back-end, the field *title* of the todo class has been renamed with *name*, and all the application is now broken for such a small change.
+Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time consuming issue when the codeBase starts getting bigger, and maybe you haven't been maintaining the application for a while so it might take you some time to get back into it.
 
 ### Making the application *Evolvable-By-Design*
-Our goal for this tutorial is to make the application *Evolvable-By-Design*, so that these kinds of changes won't break our ui.
 
-Fortunately for us, the backend provides an [enhanced openAPI specification](experiments/crossover-developers-study/experimentation/Docs/openapi.yml) file that we can use, and that is available(with the OPTION method) at http://localhost:8080/rest.
- 
-Unfortunately for us, as the *Evolvable-By-Design* is a whole new paradigm, we canno't just change the todoItem, we need to change the way the application communicates with the back-end. Therefore we have provided you with an base application that uses pivo, some of it is still broken and you will have to fix it.
+What if your application could evolve as the same time as the back-end, without anyone having to make the manual changes?
 
-Checkout to the branch `tutorial/initial-pivo`:
-```js
-git checkout tutorial/initial-pivo
+This is the idea of the *Pivo* library that we will now leverage to make our application resilient to changes.
+
+In your front-end, run the following command:
+```sh
+npm i @evolvable-by-design/pivo
 ```
 
-TODO remove some of the TodoItem and make the participant implement a simple version of it, then provide the full pivo implementation with the utilitary class created and explain it.  
+The documentation can be found [here](https://github.com/evolvable-by-design/pivo/tree/master/packages/pivo)
 
+In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backend, let's take [this one](backend/v2/openapi.yml) to implement our approach. 
 
