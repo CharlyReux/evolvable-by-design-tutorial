@@ -14,7 +14,7 @@ class ProfileService {
      * @returns The user object
      */
     async getUserInfo(userId: number): Promise<User> {
-        const response = await axios.get(`${this.baseUrl}/user/${userId}`)
+        const response = await axios.get(`${this.baseUrl}/users/${userId}`)
         if (response.status !== 200) {
             throw new Error(`Failed to fetch user info: ${response.status}`);
         }
