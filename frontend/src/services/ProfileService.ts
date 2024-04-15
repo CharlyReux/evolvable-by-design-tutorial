@@ -15,7 +15,6 @@ class ProfileService {
         }
         return response.data as User;
 
-
     }
 }
 
