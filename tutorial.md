@@ -187,7 +187,21 @@ async getUserInfo(userId: number): Promise<User> {
 
 Now save, and you should see that the user is indeed displayed in the app.
 
+## Introducing a breaking change
+We will now see how an update in the backend application can break our simple UI.
 
+For some reason, the provider decided to add those changes in its rest API:
+- Removed the createdAt field
+- changed the /users/:id endpoint to /user/:id
+
+In order to apply the changes, stop the backend, and run the new version of it, in `backend/v2`:
+```sh
+ cd ../v2
+ npm install
+ npm run dev
+ ```
+
+And you should see in your front-end that nothing works anymore
 
 
 

@@ -5,7 +5,6 @@ export interface User {
     email: string;
     age: number;
     bio: string;
-    avatarUrl: string;
     createdAt: Date;
     updatedAt: Date;
 }
