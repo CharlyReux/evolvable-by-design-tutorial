@@ -185,7 +185,7 @@ async getUserInfo(userId: number): Promise<User> {
 }
 ```
 
-
+Now save, and you should see that the user is indeed displayed in the app.
 
 
 
