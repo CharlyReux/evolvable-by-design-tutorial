@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "tutorial backend application updated",
+  "description": "tutorial backend application",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js"
@@ -9,7 +9,6 @@
   "author": "charly reux",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.19.2",
     "nodemon": "^3.1.0"
   }

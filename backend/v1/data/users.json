@@ -6,6 +6,7 @@
         "email": "johndoe@example.com",
         "age": 25,
         "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "avatarUrl": "https://example.com/avatar/johndoe.jpg",
         "createdAt": "2022-01-01T00:00:00Z",
         "updatedAt": "2022-01-01T00:00:00Z"
     },
@@ -16,6 +17,7 @@
         "email": "janesmith@example.com",
         "age": 30,
         "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "avatarUrl": "https://example.com/avatar/janesmith.jpg",
         "createdAt": "2022-01-01T00:00:00Z",
         "updatedAt": "2022-01-01T00:00:00Z"
     }

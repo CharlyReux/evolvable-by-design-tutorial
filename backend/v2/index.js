@@ -7,7 +7,7 @@ var cors = require('cors')
 
 app.use(cors())
 app.listen(port, () => {
-  console.log(`tutorial backend started on port ${port}`)
+    console.log(`tutorial backend started on port ${port}`)
 })
 
 app.get('/openapi.yml', (req, res) => {
