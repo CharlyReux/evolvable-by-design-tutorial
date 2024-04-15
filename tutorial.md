@@ -163,10 +163,27 @@ npm install
 npm run dev
 ```
 
-On the [page](http://localhost:5173/) You should now see the almost empty application that you will work on.
+On the [page](http://localhost:5173/) You should now see the simple application that you will work on.
 
 ## Displaying user informations
 
+The goal of the application is simply to display user information when entering an id and pressing the button.
+
+A simple UI is provided in [App.tsx](frontend/src/App.tsx), you can look around to see how it works (Note that on line 11, you can see that the url is set up to be `http://localhost:3000`). 
+However the calls for the api is not setup yet, so requesting to the backend won't do much for now.
+
+
+In the [Profile Service](frontend/src/services/ProfileService.ts), you can implement the getUserInfo() method with the following code:
+
+```ts
+async getUserInfo(userId: number): Promise<User> {
+    const response = await axios.get(`${this.baseUrl}/users/${userId}`)
+    if (response.status !== 200) {
+        throw new Error(`Failed to fetch user info: ${response.status}`);
+    }
+    return response.data as User;
+}
+```
 
 
 

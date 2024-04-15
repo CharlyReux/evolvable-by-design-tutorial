@@ -1,5 +1,4 @@
-import { useId, useState } from 'react'
-import { Unstable_NumberInput as NumberInput } from '@mui/base/Unstable_NumberInput';
+import { useState } from 'react'
 
 import './App.css'
 import { User } from './Models/User'
@@ -19,7 +18,7 @@ function App() {
     }
     userServices.getUserInfo(id)
       .then((user) => setCurrentUser(user))
-      .catch((error) => console.error(error));
+      .catch((error) => alert(error));
     console.log('User info:', currentUser);
   }
 
@@ -35,6 +34,11 @@ function App() {
           type='number'
           placeholder="Enter user ID"
           onChange={handleIdChange}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              getUserInfos(currentId);
+            }
+          }}
         />
       </div>
       <div>
