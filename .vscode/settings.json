@@ -6,7 +6,7 @@
                     "name": "server",
                     "shouldRunCommands": false,
                     "commands": [
-                        "cd backend/v1",
+                        "cd backend/v2",
                         "npm run dev"
                     ]
                 },

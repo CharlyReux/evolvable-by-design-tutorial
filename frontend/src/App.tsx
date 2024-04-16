@@ -1,25 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import './App.css'
-import { User } from './Models/User'
-import ProfileService from './services/ProfileService'
+import UserService from './services/UserService'
 import Button from '@mui/material/Button';
 import ProfileCard from './Components/ProfileCard';
 import { TextField } from '@mui/material';
+import { SemanticResource } from '@evolvable-by-design/pivo';
 
 function App() {
-  const userServices = new ProfileService('http://localhost:3000');
+  const [userService, setUserService] = useState<UserService | null>(null);
   const [currentId, setCurrentId] = useState<number | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<SemanticResource | null>(null);
+
+  useEffect(() => {
+    UserService.forApiAtUrl("http://localhost:3000/openapi.json").then(setUserService)
+  }, [])
+
+
 
   const getUserInfos = (id: number | null) => {
     if (!id) {
       return;
     }
-    userServices.getUserInfo(id)
+    userService!.getUserInfo(id)
       .then((user) => setCurrentUser(user))
       .catch((error) => alert(error));
-    console.log('User info:', currentUser);
   }
 
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {

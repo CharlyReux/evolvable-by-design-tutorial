@@ -3,12 +3,21 @@ const app = express()
 const port = 3000
 const fs = require('fs')
 var cors = require('cors')
+const yaml = require('js-yaml')
 
 app.use(cors())
 app.listen(port, () => {
   console.log(`tutorial backend started on port ${port}`)
 })
 
+
+app.get('/openapi.yml', (req, res) => {
+  fs.readFile('data/openapi.yml', 'utf8', (err, data) => {
+    jsonOpenAPI = yaml.load(data)
+    res.setHeader('Content-Type', 'application/json')
+    res.send(jsonOpenAPI)
+  })
+})
 
 app.get('/users', (req, res) => {
   fs.readFile('data/users.json', 'utf8', (err, data) => {
