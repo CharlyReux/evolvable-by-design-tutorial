@@ -11,7 +11,7 @@ app.listen(port, () => {
 })
 
 
-app.get('/openapi.yml', (req, res) => {
+app.get('/openapi.json', (req, res) => {
   fs.readFile('data/openapi.yml', 'utf8', (err, data) => {
     jsonOpenAPI = yaml.load(data)
     res.setHeader('Content-Type', 'application/json')

@@ -20,7 +20,32 @@ class UserService {
             throw new Error(errorMessage)
         }
     }
+    async deleteUser(user: SemanticResource): Promise<void> {
+        const deleteOperation = user.
+            getRelation("http://myVoc.org/#rel/delete")
+            .map(relation => {
+                if (relation instanceof Array) {
+                    return relation[0].operation
+                }
+                return relation.operation
+            })
+            .getOrThrow(
+                () =>
+                    new Error('The REST API operation to delete a todo is not available')
+            )
+        deleteOperation.invoke().then((response) => {
+            if (response.status === 204) {
+                alert('User deleted successfully')
+            } else {
+                alert('Failed to delete user')
+            }
+        }
+        ).catch((error) => {
+            throw new Error(`Failed to delete user: ${error}`);
+        })
 
+        return;
+    }
 
     /**
      * Gets the user info from the server, provided the user Id

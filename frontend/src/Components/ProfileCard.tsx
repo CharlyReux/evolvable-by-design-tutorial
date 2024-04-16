@@ -1,15 +1,17 @@
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { SemanticResource } from '@evolvable-by-design/pivo';
 import { User } from '../Models/User';
 import { useEffect, useState } from 'react';
 import WithSemanticDataRequired from '../pivoUtils/WithSemanticDataRequired';
 
-export default function ProfileCard(props: { user: SemanticResource }) {
+export default function ProfileCard(props: { user: SemanticResource, deleteUser: (user: SemanticResource) => Promise<void>}) {
+    const deleteUser = props.deleteUser
     const [user, setUser] = useState<SemanticResource>(props.user)
     useEffect(() => {
         setUser(props.user)
+        console.log(props.user.getRelation("http://myVoc.org/#rel/delete"))
     }, [props.user])
 
     return (
@@ -41,7 +43,9 @@ export default function ProfileCard(props: { user: SemanticResource }) {
                             Created At: {createdAt}
                         </Typography>
                     </CardContent>
+                    {(user.isRelationAvailable("http://myVoc.org/#rel/delete")) ? <Button onClick={() => deleteUser(user)}>delete User</Button> : ""}
                 </Card>
+            
             )}
         </WithSemanticDataRequired>
     )

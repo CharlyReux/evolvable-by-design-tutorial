@@ -317,9 +317,10 @@ First, we will replace the getUserInfo method to return a Semantic Resource
 > You can check where the two entity identifier are defined in http://localhost:3000/openapi.yml in order to get a feel of how the library works.<br>
 > 
 
+We now need to update our profileCard component accordingly, so that it can use the new type of data the service gets.
 
-We now need to update our profileCard component accordingly, so that it can use the data we now provide to it.
-We provide a utilitary class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how our component might look like now
+We provide a utilitary class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how our component looks like now.
+
 ```tsx
 export default function ProfileCard(props: { user: SemanticResource }) {
     const [user, setUser] = useState<SemanticResource>(props.user)
@@ -351,7 +352,6 @@ export default function ProfileCard(props: { user: SemanticResource }) {
                         <Typography variant="body1" sx={{ marginBottom: 2 }}>
                             Bio: {bio}
                         </Typography>
-
                         <Typography variant="body2">
                             Created At: {createdAt}
                         </Typography>
@@ -362,11 +362,88 @@ export default function ProfileCard(props: { user: SemanticResource }) {
     )
 }
 ```
-TODO make the user switch between the two backends to show that the app works in both cases.
 
-TODO add more informations about the library, for links between endpoints like a delete and stuff.
-TODO add the changes in backends to main branch by merging the necessary things
+> ##### *Explanation*
+> The component simplifies the usage of the library by providing a mapping between the semantic identifiers and their values.<br>
+> Without this component we could get values from the user with the following syntax:
+> ```ts
+> const firstName:string = await user.getOneValue("https://schema.org/givenName")
+>```
 
-TODO redo the tutorial from the main branch
+The application should now display the user's information, you can even switch to the previous backend implementation and you should see that it still works:
+```sh
+cd ../v1
+npm run dev
+```
+
+
+#### More features
+
+These were of course simple changes, but the library allows for some convenient behaviors.
+
+For example, let's say the backend now provides a way to delete a user, in the openApi.json file, it would look like this
+
+```yml
+/user:
+  get:
+    x-@id: http://myVoc.org/vocab#getUser
+    summary: gets a user by its id
+    operationId: getUser
+    parameters:
+      - $ref: '#/components/parameters/id'
+    responses:
+      '200':
+        description: The user retrieved
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        links:
+          deleteUser:
+            operationId: deleteUser
+            x-@relation: http://myVoc.org/#rel/delete
+            parameters:
+              id: $response.body#/id
+  delete:
+    x-@id: http://myVoc.org/vocab#deleteUser
+    summary: deletes a user by its id
+    parameters:
+      - $ref: '#/components/parameters/id'
+    operationId: deleteUser
+    responses:
+      '204':
+        description: user deleted
+```
+
+In our user ProfileCard we could have a optional button that can be displayed if a relation to a delete method exists:
+ 
+```tsx
+{(user.isRelationAvailable("http://myVoc.org/#rel/delete")) ? <Button onClick={() => deleteUser(user)}>delete User</Button> : ""}
+```
+
+with a method like this one in our UserService
+```ts
+  async deleteUser(user: SemanticResource): Promise<SemanticResource> {
+      const deleteOperation = user.
+          getRelation("http://myVoc.org/#rel/delete")//get the relations to a delete operation
+          .map(relation => {
+              if(relation instanceof Array) {
+                  return relation[0].operation
+              }
+              return relation.operation
+          })//gets the operation of the delete
+          .getOrThrow(
+              () =>
+                  new Error('The REST API operation to delete a todo is not available')
+          )
+          
+      const response = await deleteOperation.invoke()//invoke the delete operation, without having to specify the id
+      return response.data;
+  }
+```
+
+TODO add the changes from backends and from the tutorial to main branch by merging the necessary things
+
+TODO redo the tutorial from the main branch to check if working well
 
 

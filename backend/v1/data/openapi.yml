@@ -1,13 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Swagger Petstore - OpenAPI 3.0
-  termsOfService: http://swagger.io/terms/
+  title: tutorial - pivo
   contact:
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    email: name@mail.com
   version: 1.0.11
+servers:
+  - url: 'http://localhost:3000/'
 paths:
   /users/{id}:
     get:
@@ -60,9 +58,9 @@ components:
   parameters:
     id:
       in: path
+      x-@id: https://schema.org/identifier
       name: id
       description: the id of the card to be deleted
       required: true
       schema:
-        x-@id: https://schema.org/identifier
         type: number

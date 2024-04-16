@@ -59,7 +59,7 @@ function App() {
           Get User Info
         </Button>
       </div>
-      {!currentUser ? <p>No user information available</p> : <ProfileCard user={currentUser} />}
+      {!currentUser ? <p>No user information available</p> : <ProfileCard user={currentUser} deleteUser={userService!.deleteUser} />}
     </div>
   )
 }
