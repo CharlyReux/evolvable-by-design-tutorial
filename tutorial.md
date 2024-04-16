@@ -191,10 +191,10 @@ Now save, and you should see that the user is indeed displayed in the app.
 We will now see how an update in the backend application can break our simple UI.
 
 For some reason, the provider decided to add those changes in its rest API:
-- Removed the createdAt field
-- changed the /users/:id endpoint to /user/:id
+- changed the id parameter location from a path parameter to a query parameter
+- changed the /users endpoint to /user
 
-In order to apply the changes, stop the backend, and run the new version of it, in `backend/v2`:
+In order to apply the cchanges, stop the backend, and run the new version of it, in `backend/v2`:
 ```sh
  cd ../v2
  npm install
@@ -205,10 +205,11 @@ And you should see in your front-end that nothing works anymore.
 
 In order to fix it, you now have to
 - First, Change the endpoint used in the `getUserInfo()` method from `${this.baseUrl}/users/${userId}` to `${this.baseUrl}/user/${userId}`.
-> The request does not throw an error, but the entire page gets broken, because the field createAt is not available anymore.
-- To fix this, you need to change how the user is displayed, in the (ProfileCard)[frontend/src/Components/ProfileCard.tsx] component, remove the three lines that show the createdAt value(you might as well want to remove the createdAt field in the user model).
+> however it still does not work because the id must not be in the path anymore.
+- To fix this, change the axios request to this `axios.get(${this.baseUrl}+"/user",{params: {userId: userId}})`
 
-Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time consuming issue when the codeBase starts getting bigger, and maybe you haven't been maintaining the application for a while so it might take you some time to get back into it.
+
+Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time consuming issue when the codeBase starts getting bigger, or maybe you haven't been maintaining the application for a while so it might take you some time to get back into it.
 
 ### Making the application *Evolvable-By-Design*
 
@@ -223,5 +224,231 @@ npm i @evolvable-by-design/pivo
 
 The documentation can be found [here](https://github.com/evolvable-by-design/pivo/tree/master/packages/pivo)
 
-In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backend, let's take [this one](backend/v2/openapi.yml) to implement our approach. 
+In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.yml` endpoint.
+
+#### Setting up Pivo in our application
+
+>*Note:*Some of the changes are made simpler for the sake of readability of this tutorial.
+
+First, we will start by setting up our UserService to use the library, in App.tsx, make the following changes :
+```tsx
+function App() {
+- const userServices = new ProfileService('http://localhost:3000');
++ const [userService, setUserService] = useState<UserService | null>(null);
+  const [currentId, setCurrentId] = useState<number | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+
++ useEffect(() => {
++   UserService.forApiAtUrl("http://localhost:3000/openapi.yml").then(setUserService)
++ }, [])
+
+  const getUserInfos = (id: number | null) => {
+    if (!id) {
+      return;
+    }
+-    userService.getUserInfo(id)
++    userService!.getUserInfo(id)
+
+...
+}
+
+```
+
+Now in our UserService we will make these changes:
+
+```ts
+ -  private baseUrl: string;
+ +  private pivo: Pivo;
+
+ -   constructor(baseUrl: string) {
+ -       this.baseUrl = baseUrl;
+ -   }
+ +   constructor(documentation: string) {
+ +       this.pivo = new Pivo(documentation);
+ +   }
+
+ +   static async forApiAtUrl(url: string) {
+ +       const response = await axios.get(url)
+ +       if (response.status === 200) {
+ +           console.log(response.data)
+ +           return new UserService(response.data)
+ +       } else {
+ +           const errorMessage = `Impossible to get the documentation of the API at ${url}.`
+ +           alert(errorMessage)
+ +           throw new Error(errorMessage)
+ +       }
+ +   }
+
+``` 
+
+As said earlier, pivo needs the openAPI specification file in order to be working. What we have done here is to fetch that specification upon the initial loading of the app, in order to to instantiate our service with it.
+
+#### Using Pivo
+
+However our app still doesn't work, we now need to use pivo in our implementation of the requests and in our ProfileCard component.
+
+First, we will replace the getUserInfo method to return a Semantic Resource 
+```tsx
+    /**
+     * Gets the user info from the server, provided the user Id
+     * @param userId the Id of the user to fetch
+     * @returns The user Semantic object
+     */
+    async getUserInfo(userId: number): Promise<SemanticResource> {
+
+        const getOperation = this.pivo
+            .get("http://myVoc.org/vocab#user")
+            .getOrThrow(() => new Error("No operations found for fetching user info."))
+
+        const response = await getOperation.invoke({ ["https://schema.org/identifier"]: userId })
+
+        if (response.status !== 200) {
+            throw new Error(`Failed to fetch user info: ${response.status}`);
+        }
+        return response.data;
+    }
+```
+
+> ##### *Explanation*
+> The library leverage the enhanced openApi file in order to automatically infer the appropriate parameters, methods, etc.<br>
+> To get the operation we need, we ask the library to find an operation that can get us a user (defined by our vocabulary "http://myVoc.org/vocab#user").<br>
+> We then invoke the operation with the userId parameter and the appropriate entity https://schema.org/identifier, note that we don't have to tell the application where the parameter needs to be defined, the library will automatically infer whether it is in the path, the body, etc.<br>
+> You can check where the two entity identifier are defined in http://localhost:3000/openapi.yml in order to get a feel of how the library works.<br>
+> 
+
+We now need to update our profileCard component accordingly, so that it can use the new type of data the service gets.
+
+We provide a utilitary class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how our component looks like now.
+
+```tsx
+export default function ProfileCard(props: { user: SemanticResource }) {
+    const [user, setUser] = useState<SemanticResource>(props.user)
+    useEffect(() => {
+        setUser(props.user)
+    }, [props.user])
+
+    return (
+        <WithSemanticDataRequired
+            data={user}
+            mappings={{
+                firstName: "https://schema.org/givenName",
+                lastName: "https://schema.org/familyName",
+                email: "https://schema.org/email",
+                bio: "https://schema.org/abstract",
+                createdAt: "https://schema.org/dateCreated"
+            }}
+            loader={<div>Loading...</div>}>
+            {({ firstName, lastName, email, bio, createdAt }) => (
+
+                <Card variant='outlined' sx={{ maxWidth: 400, margin: 'auto', marginTop: 20 }}>
+                    <CardContent>
+                        <Typography variant="h4" sx={{ marginBottom: 2 }}>
+                            {firstName} {lastName}
+                        </Typography>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            Email: {email}
+                        </Typography>
+                        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+                            Bio: {bio}
+                        </Typography>
+                        <Typography variant="body2">
+                            Created At: {createdAt}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            )}
+        </WithSemanticDataRequired>
+    )
+}
+```
+
+> ##### *Explanation*
+> The component simplifies the usage of the library by providing a mapping between the semantic identifiers and their values.<br>
+> Without this component we could get values from the user with the following syntax:
+> ```ts
+> const firstName:string = await user.getOneValue("https://schema.org/givenName")
+>```
+
+The application should now display the user's information, you can even switch to the previous backend implementation and you should see that it still works:
+```sh
+cd ../v1
+npm run dev
+```
+
+
+#### More features
+
+These were of course simple changes, but the library allows for some convenient behaviors.
+
+For example, let's say the backend now provides a way to delete a user, in the openApi.json file, it would look like this
+
+```yml
+/user:
+  get:
+    x-@id: http://myVoc.org/vocab#getUser
+    summary: gets a user by its id
+    operationId: getUser
+    parameters:
+      - $ref: '#/components/parameters/id'
+    responses:
+      '200':
+        description: The user retrieved
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        links:
+          deleteUser:
+            operationId: deleteUser
+            x-@relation: http://myVoc.org/#rel/delete
+            parameters:
+              id: $response.body#/id
+  delete:
+    x-@id: http://myVoc.org/vocab#deleteUser
+    summary: deletes a user by its id
+    parameters:
+      - $ref: '#/components/parameters/id'
+    operationId: deleteUser
+    responses:
+      '204':
+        description: user deleted
+```
+
+In our user ProfileCard we could have an optional button that can be displayed if a relation to a delete method exists:
+ 
+```tsx
+{(user.isRelationAvailable("http://myVoc.org/#rel/delete")) ? <Button onClick={() => deleteUser(user)}>delete User</Button> : ""}
+```
+
+and a method like this one in our UserService:
+```ts
+  async deleteUser(user: SemanticResource): Promise<SemanticResource> {
+      const deleteOperation = user.
+          getRelation("http://myVoc.org/#rel/delete")//get the relations to a delete operation
+          .map(relation => {
+              if(relation instanceof Array) {
+                  return relation[0].operation
+              }
+              return relation.operation
+          })//gets the operation of the delete
+          .getOrThrow(
+              () =>
+                  new Error('The REST API operation to delete a todo is not available')
+          )
+          
+      const response = await deleteOperation.invoke()//invoke the delete operation, without having to specify the id
+      return response.data;
+  }
+```
+
+A working implementation of this can be found in the branch `original-implementations/use-with-pivo`
+
+### Conclusion
+
+This is a new paradigm and a new way of developping a application, but it allows for a better maintainability in the long run, as no update is needed anymore.
+
+Now that you have the basics, You are now ready to start to the study, Head out to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study/experimentation to get started. 
+
+
 

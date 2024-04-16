@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: tutorial - pivo
+  contact:
+    email: name@mail.com
+  version: 1.0.11
+servers:
+  - url: 'http://localhost:3000/'
+paths:
+  /users/{id}:
+    get:
+      x-@id: http://myVoc.org/vocab#getUser
+      summary: "gets a user by its id"
+      operationId: getCUser
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: The user retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+components:
+  schemas:
+    User:
+      type: object
+      x-@type: http://myVoc.org/vocab#user
+      properties:
+        id:
+          type: number
+          x-@id: https://schema.org/identifier
+          format: int64
+        firstName:
+          type: string
+          x-@id: https://schema.org/givenName
+        lastName:
+          type: string
+          x-@id: https://schema.org/familyName
+        email:
+          type: string
+          x-@id: https://schema.org/email
+        age:
+          type: number
+          format: int32
+          x-@id: https://schema.org/Integer
+        bio:
+          type: string
+          x-@id: https://schema.org/abstract
+        updatedAt:
+          type: string
+          format: date-time
+          x-@id: https://schema.org/dateModified
+        createdAt:
+          type: string
+          format: date-time
+          x-@id: https://schema.org/dateCreated
+  parameters:
+    id:
+      in: path
+      x-@id: https://schema.org/identifier
+      name: id
+      description: the id of the card to be deleted
+      required: true
+      schema:
+        type: number

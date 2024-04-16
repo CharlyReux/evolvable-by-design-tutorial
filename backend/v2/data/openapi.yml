@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: tutorial - pivo
+  contact:
+    email: name@mail.com
+  version: 1.0.11
+servers:
+  - url: http://localhost:3000/
+paths:
+  /user:
+    get:
+      x-@id: http://myVoc.org/vocab#getUser
+      summary: gets a user by its id
+      operationId: getUser
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: The user retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          links:
+            deleteUser:
+              operationId: deleteUser
+              x-@relation: http://myVoc.org/#rel/delete
+              parameters:
+                id: $response.body#/id
+    delete:
+      x-@id: http://myVoc.org/vocab#deleteUser
+      summary: deletes a user by its id
+      parameters:
+        - $ref: '#/components/parameters/id'
+      operationId: deleteUser
+      responses:
+        '204':
+          description: user deleted
+components:
+  schemas:
+    User:
+      type: object
+      x-@type: http://myVoc.org/vocab#user
+      properties:
+        id:
+          type: number
+          x-@id: https://schema.org/identifier
+          format: int64
+        firstName:
+          type: string
+          x-@id: https://schema.org/givenName
+        lastName:
+          type: string
+          x-@id: https://schema.org/familyName
+        email:
+          type: string
+          x-@id: https://schema.org/email
+        age:
+          type: number
+          format: int32
+          x-@id: https://schema.org/Integer
+        bio:
+          type: string
+          x-@id: https://schema.org/abstract
+        updatedAt:
+          type: string
+          format: date-time
+          x-@id: https://schema.org/dateModified
+        createdAt:
+          format: date-time
+          x-@id: https://schema.org/dateCreated
+  parameters:
+    id:
+      in: query
+      x-@id: https://schema.org/identifier
+      name: id
+      description: the id of the card
+      required: true
+      schema:
+        type: number
