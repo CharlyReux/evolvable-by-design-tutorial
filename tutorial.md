@@ -5,14 +5,14 @@
 ## What is Pivo?
 It has become common practice: we use RESTful APIs to access and manipulate data on frontend applications. And to build these frontends, we separate the logic of the view and navigation from the logic that makes the REST API calls. While the logic of the view is materialized through components, the logic of the interactions with the REST API is dispatched into services. For example, all the calls to the Issues on the Github API would be done in an IssueService.
 
-But one issue arises, when the REST API changes, the front-end application is very likely to break. Something as little as changing the name of a field in a back-end can break a front-end implementation. Therefore, we devised an approach called *Pivo*, and a framework named Pivo with the purpose of tackling the co-evolution of the front-end with the back-end.  
+But one issue arises, when the REST API changes, the front-end application is very likely to break. Something as little as changing the name of a field in a back-end can break a front-end implementation. Therefore, we devised an approach called *Evolvable-By-Design*, and a framework named *Pivo* with the purpose of tackling with the co-evolution of the front-end and the back-end.  
 
 ## Example
 
 The approach is based on the use of Semantic data and the OpenApi Specification to ensure that front-end does not break.
 Here is an example of how it would look like in practice in a React application.
 
-Let's say we have an application that displays card details, here is how it would look like implemented in a classical manner.
+Let's say we have an application that displays card details, it would look like this, if implemented in a classical manner.
 ```jsx
 const CardDetailsComponent = ({ card }) =>
   <right-pane>
@@ -84,12 +84,10 @@ components:
       x-@id: http://myVoc.org/vocab#card
       properties:
         name:
-          x-@type: https://schema.org/Text
-          x-@id: http://myVoc.org/vocab#cardName
+          x-@id: https://schema.org/name
           type: string
         id:
-          x-@type: https://schema.org/identifier
-          x-@id: http://myVoc.org/vocab#cardId
+          x-@id: https://schema.org/identifier
           type: integer
   parameters:
     id:
@@ -97,9 +95,8 @@ components:
         name: id
         description: the id of the card to be deleted
         required: true
+        x-@id: https://schema.org/identifier
         schema:
-          x-@type: https://schema.org/identifier
-          x-@id: http://myVoc.org/vocab#cardId
           type: integer
 ```
 
@@ -114,7 +111,7 @@ const DELETE_SEMANTICS = 'http://myVoc.org/vocab#rel/deleteCard'
 function showCardDetailsComponent ({ card }) {
   return (
     <right-pane>
-      <h1>{card.getOneValue('http://myVoc.org/vocab#cardName')}</h1>
+      <h1>{card.getOneValue('https://schema.org/name')}</h1>
       <if test={
         card.isRelationAvailable(DELETE_SEMANTICS)}>
         <pop-up-with-button
@@ -142,7 +139,7 @@ class CardService {
 }
 ```
 
-This approach allows for a co-evolution of the front-end and the back-end, and covers the breaking changes we had discussed earlier.
+This approach allows for a co-evolution of the front-end and the back-end, and covers the breaking changes we discussed earlier.
 
 
 ## Do it yourself: Make an application *Evolvable-By-Design*
@@ -173,7 +170,7 @@ A simple UI is provided in [App.tsx](frontend/src/App.tsx), you can look around 
 However the calls for the api is not setup yet, so requesting to the backend won't do much for now.
 
 
-In the [Profile Service](frontend/src/services/ProfileService.ts), you can implement the getUserInfo() method with the following code:
+In the [User Service](frontend/src/services/UserService.ts), you can implement the getUserInfo() method with the following code:
 
 ```ts
 async getUserInfo(userId: number): Promise<User> {
@@ -190,26 +187,28 @@ Now save, and you should see that the user is indeed displayed in the app.
 ### Introducing a breaking change
 We will now see how an update in the backend application can break our simple UI.
 
-For some reason, the provider decided to add those changes in its rest API:
-- changed the id parameter location from a path parameter to a query parameter
-- changed the /users endpoint to /user
+For some reason, the provider decided to add these changes in the REST API:
+- Changed the id parameter location from a path parameter to a query parameter
+- Changed the /users endpoint to /user
 
-In order to apply the cchanges, stop the backend, and run the new version of it, in `backend/v2`:
+In order to apply the changes, stop the backend, and run the new version of it, in `backend/v2`:
 ```sh
  cd ../v2
  npm install
  npm run dev
  ```
 
-And you should see in your front-end that nothing works anymore.
+And you should see in your front-end that requesting for a user does not work anymore.
 
 In order to fix it, you now have to
 - First, Change the endpoint used in the `getUserInfo()` method from `${this.baseUrl}/users/${userId}` to `${this.baseUrl}/user/${userId}`.
-> however it still does not work because the id must not be in the path anymore.
-- To fix this, change the axios request to this `axios.get(${this.baseUrl}+"/user",{params: {userId: userId}})`
+> However it still does not work because the id must not be in the path anymore.
+- To fix this, change the axios request to 
+  - `` await axios.get(`${this.baseUrl}/user`,{params: {id: userId}}) ``
+`
 
 
-Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time consuming issue when the codeBase starts getting bigger, or maybe you haven't been maintaining the application for a while so it might take you some time to get back into it.
+Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time consuming issue when the codeBase starts getting bigger, or maybe when you haven't been maintaining the application for a while so it takes you longer to get back into it.
 
 ### Making the application *Evolvable-By-Design*
 
@@ -224,11 +223,11 @@ npm i @evolvable-by-design/pivo
 
 The documentation can be found [here](https://github.com/evolvable-by-design/pivo/tree/master/packages/pivo)
 
-In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.yml` endpoint.
+In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.json` endpoint(http://localhost:3000/openapi.json) .
 
 #### Setting up Pivo in our application
 
->*Note:*Some of the changes are made simpler for the sake of readability of this tutorial.
+>*Note:* Some of the changes are made simpler for the sake of readability of this tutorial.
 
 First, we will start by setting up our UserService to use the library, in App.tsx, make the following changes :
 ```tsx
@@ -236,11 +235,12 @@ function App() {
 - const userServices = new ProfileService('http://localhost:3000');
 + const [userService, setUserService] = useState<UserService | null>(null);
   const [currentId, setCurrentId] = useState<number | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<SemanticResource | null>(null);
 
 
 + useEffect(() => {
-+   UserService.forApiAtUrl("http://localhost:3000/openapi.yml").then(setUserService)
++   UserService.forApiAtUrl("http://localhost:3000/openapi.json").then(setUserService)
 + }, [])
 
   const getUserInfos = (id: number | null) => {
@@ -249,7 +249,9 @@ function App() {
     }
 -    userService.getUserInfo(id)
 +    userService!.getUserInfo(id)
-
+      .then((user) => setCurrentUser(user))
+      .catch((error) => alert(error));
+    console.log('User info:', currentUser);
 ...
 }
 
@@ -283,10 +285,11 @@ Now in our UserService we will make these changes:
 ``` 
 
 As said earlier, pivo needs the openAPI specification file in order to be working. What we have done here is to fetch that specification upon the initial loading of the app, in order to to instantiate our service with it.
+We basically have made our service depend on the specification rather than on the base url.
 
 #### Using Pivo
 
-However our app still doesn't work, we now need to use pivo in our implementation of the requests and in our ProfileCard component.
+However our app still doesn't work as we need to use pivo in our implementation of the requests and in our ProfileCard component, instead of the url
 
 First, we will replace the getUserInfo method to return a Semantic Resource 
 ```tsx
@@ -310,12 +313,14 @@ First, we will replace the getUserInfo method to return a Semantic Resource
     }
 ```
 
+
 > ##### *Explanation*
+> A semantic resource is simply an object that contains everything that can be infered from the specification and the response object(links, response, relations, etc)<br>
 > The library leverage the enhanced openApi file in order to automatically infer the appropriate parameters, methods, etc.<br>
 > To get the operation we need, we ask the library to find an operation that can get us a user (defined by our vocabulary "http://myVoc.org/vocab#user").<br>
 > We then invoke the operation with the userId parameter and the appropriate entity https://schema.org/identifier, note that we don't have to tell the application where the parameter needs to be defined, the library will automatically infer whether it is in the path, the body, etc.<br>
-> You can check where the two entity identifier are defined in http://localhost:3000/openapi.yml in order to get a feel of how the library works.<br>
-> 
+> You can check where the two entity identifier `http://myVoc.org/vocab#user` and `https://schema.org/identifier` are defined in http://localhost:3000/openapi.yml in order to get a feel of how the library works.<br>
+> <br>
 
 We now need to update our profileCard component accordingly, so that it can use the new type of data the service gets.
 
@@ -369,8 +374,10 @@ export default function ProfileCard(props: { user: SemanticResource }) {
 > ```ts
 > const firstName:string = await user.getOneValue("https://schema.org/givenName")
 >```
-
+><br>
+<br>
 The application should now display the user's information, you can even switch to the previous backend implementation and you should see that it still works:
+
 ```sh
 cd ../v1
 npm run dev
@@ -379,9 +386,9 @@ npm run dev
 
 #### More features
 
-These were of course simple changes, but the library allows for some convenient behaviors.
+These were of course simple changes, but the library allows our application to have convenient behaviors.
 
-For example, let's say the backend now provides a way to delete a user, in the openApi.json file, it would look like this
+For example, the backend provides a way to delete a user, as can be seen in the openApi.json file:
 
 ```yml
 /user:
@@ -415,7 +422,9 @@ For example, let's say the backend now provides a way to delete a user, in the o
         description: user deleted
 ```
 
-In our user ProfileCard we could have an optional button that can be displayed if a relation to a delete method exists:
+> *Note*: the delete method is a dummy method, it is just for explanation purposes.
+
+And since the server handles hypermedia controls (with a `_link` attribute in the responses), in our user ProfileCard, we can have an optional button that can be displayed if a relation to a delete method exists:
  
 ```tsx
 {(user.isRelationAvailable("http://myVoc.org/#rel/delete")) ? <Button onClick={() => deleteUser(user)}>delete User</Button> : ""}
@@ -441,12 +450,14 @@ and a method like this one in our UserService:
       return response.data;
   }
 ```
+Some other minor changes need to be made in order for this to work, but this can get you an idea of what is possible with this approach.
+
 
 A working implementation of this can be found in the branch `original-implementations/use-with-pivo`
 
 ### Conclusion
 
-This is a new paradigm and a new way of developping a application, but it allows for a better maintainability in the long run, as no update is needed anymore.
+This is a new paradigm and a new way of developping a UI, but it allows for a better maintainability and less time consuming changes to be made, especially in the long run.
 
 Now that you have the basics, You are now ready to start to the study, Head out to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study/experimentation to get started. 
 
