@@ -2,13 +2,13 @@ import { useState } from 'react'
 
 import './App.css'
 import { User } from './Models/User'
-import ProfileService from './services/ProfileService'
 import Button from '@mui/material/Button';
 import ProfileCard from './Components/ProfileCard';
 import { TextField } from '@mui/material';
+import UserService from './services/UserService';
 
 function App() {
-  const userServices = new ProfileService('http://localhost:3000');
+  const userServices = new UserService('http://localhost:3000');
   const [currentId, setCurrentId] = useState<number | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
