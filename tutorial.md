@@ -415,13 +415,13 @@ For example, let's say the backend now provides a way to delete a user, in the o
         description: user deleted
 ```
 
-In our user ProfileCard we could have a optional button that can be displayed if a relation to a delete method exists:
+In our user ProfileCard we could have an optional button that can be displayed if a relation to a delete method exists:
  
 ```tsx
 {(user.isRelationAvailable("http://myVoc.org/#rel/delete")) ? <Button onClick={() => deleteUser(user)}>delete User</Button> : ""}
 ```
 
-with a method like this one in our UserService
+and a method like this one in our UserService:
 ```ts
   async deleteUser(user: SemanticResource): Promise<SemanticResource> {
       const deleteOperation = user.
@@ -442,8 +442,13 @@ with a method like this one in our UserService
   }
 ```
 
-TODO add the changes from backends and from the tutorial to main branch by merging the necessary things
+A working implementation of this can be found in the branch `original-implementations/use-with-pivo`
 
-TODO redo the tutorial from the main branch to check if working well
+### Conclusion
+
+This is a new paradigm and a new way of developping a application, but it allows for a better maintainability in the long run, as no update is needed anymore.
+
+Now that you have the basics, You are now ready to start to the study, Head out to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study/experimentation to get started. 
+
 
 
