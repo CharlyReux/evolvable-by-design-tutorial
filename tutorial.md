@@ -3,7 +3,7 @@
 
 
 ## What is Pivo?
-It has become common practice: we use RESTful APIs to access and manipulate data on frontend applications. And to build these frontends, we separate the logic of the view and navigation from the logic that makes the REST API calls. While the logic of the view is materialized through components, the logic of the interactions with the REST API is dispatched into services. For example, all the calls to the Issues on the Github API would be done in an IssueService.
+It has become common practice: we use RESTful APIs to access and manipulate data on frontend applications. And to build these frontends, we separate the logic of the view and navigation from the logic that makes the REST API calls. While the logic of the view is materialized through components, the logic of the interactions with the REST API is dispatched into services. For example, all the calls to the Issues on the GitHub API would be done in an IssueService.
 
 But one issue arises, when the REST API changes, the front-end application is very likely to break. Something as little as changing the name of a field in a back-end can break a front-end implementation. Therefore, we devised an approach called *Evolvable-By-Design*, and a framework named *Pivo* with the purpose of tackling with the co-evolution of the front-end and the back-end.  
 
@@ -42,7 +42,7 @@ This implementation of the CardDetailsComponent would break, as it is tightly li
 Here are some changes that would break it:
 - The URI changes (/card instead of /cards)
 - The location of the id is changed from the URL to the request body.
-- A non-admin user is no allowed to delete a card anymore.
+- A non-admin user is not allowed to delete a card anymore.
 
 To solve that, we leverage Semantic data and the OpenApi Specification.
 With an OpenAPI specification enhanced with Semantic descriptors like this one:
@@ -145,7 +145,7 @@ This approach allows for a co-evolution of the front-end and the back-end, and c
 ## Do it yourself: Make an application *Evolvable-By-Design*
 
 ### Introduction
-To get you started with the *Pivo* approach, you will be making a simple application to display informations about a user
+To get you started with the *Pivo* approach, you will be making a simple application to display information about a user
 
 Start by launching the back-end with the commands
  ```sh
@@ -162,12 +162,12 @@ npm run dev
 
 On the [page](http://localhost:5173/) You should now see the simple application that you will work on.
 
-### Displaying user informations
+### Displaying user information
 
 The goal of the application is simply to display user information when entering an id and pressing the button.
 
 A simple UI is provided in [App.tsx](frontend/src/App.tsx), you can look around to see how it works. 
-However the calls for the api is not setup yet, so requesting to the backend won't do much for now.
+However the calls for the API is not setup yet, so requesting to the backend won't do much for now.
 
 
 In the [User Service](frontend/src/services/UserService.ts), you can implement the getUserInfo() method with the following code:
@@ -202,13 +202,13 @@ And you should see in your front-end that requesting for a user does not work an
 
 In order to fix it, you now have to
 - First, Change the endpoint used in the `getUserInfo()` method from `${this.baseUrl}/users/${userId}` to `${this.baseUrl}/user/${userId}`.
-> However it still does not work because the id must not be in the path anymore.
+> However, it still does not work because the id must not be in the path anymore.
 - To fix this, change the axios request to 
   - `` await axios.get(`${this.baseUrl}/user`,{params: {id: userId}}) ``
 `
 
 
-Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time consuming issue when the codeBase starts getting bigger, or maybe when you haven't been maintaining the application for a while so it takes you longer to get back into it.
+Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time-consuming issue when the codeBase starts getting bigger, or maybe when you haven't been maintaining the application for a while, so it takes you longer to get back into it.
 
 ### Making the application *Evolvable-By-Design*
 
@@ -223,7 +223,7 @@ npm i @evolvable-by-design/pivo
 
 The documentation can be found [here](https://github.com/evolvable-by-design/pivo/tree/master/packages/pivo)
 
-In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.json` endpoint(http://localhost:3000/openapi.json) .
+In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.json` endpoint(http://localhost:3000/openapi.json).
 
 #### Setting up Pivo in our application
 
@@ -284,12 +284,12 @@ Now in our UserService we will make these changes:
 
 ``` 
 
-As said earlier, pivo needs the openAPI specification file in order to be working. What we have done here is to fetch that specification upon the initial loading of the app, in order to to instantiate our service with it.
-We basically have made our service depend on the specification rather than on the base url.
+As said earlier, pivo needs the openAPI specification file in order to be working. What we have done here is to fetch that specification upon the initial loading of the app, in order to instantiate our service with it.
+We basically have made our service depend on the specification rather than on the base URL.
 
 #### Using Pivo
 
-However our app still doesn't work as we need to use pivo in our implementation of the requests and in our ProfileCard component, instead of the url
+However, our app still doesn't work as we need to use pivo in our implementation of the requests and in our ProfileCard component, instead of the URL.
 
 First, we will replace the getUserInfo method to return a Semantic Resource 
 ```tsx
@@ -315,7 +315,7 @@ First, we will replace the getUserInfo method to return a Semantic Resource
 
 
 > ##### *Explanation*
-> A semantic resource is simply an object that contains everything that can be infered from the specification and the response object(links, response, relations, etc)<br>
+> A semantic resource is simply an object that contains everything that can be inferred from the specification and the response object(links, response, relations, etc)<br>
 > The library leverage the enhanced openApi file in order to automatically infer the appropriate parameters, methods, etc.<br>
 > To get the operation we need, we ask the library to find an operation that can get us a user (defined by our vocabulary "http://myVoc.org/vocab#user").<br>
 > We then invoke the operation with the userId parameter and the appropriate entity https://schema.org/identifier, note that we don't have to tell the application where the parameter needs to be defined, the library will automatically infer whether it is in the path, the body, etc.<br>
@@ -324,7 +324,7 @@ First, we will replace the getUserInfo method to return a Semantic Resource
 
 We now need to update our profileCard component accordingly, so that it can use the new type of data the service gets.
 
-We provide a utilitary class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how our component looks like now.
+We provide a utility class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how our component looks like now.
 
 ```tsx
 export default function ProfileCard(props: { user: SemanticResource }) {
@@ -457,9 +457,9 @@ A working implementation of this can be found in the branch `original-implementa
 
 ### Conclusion
 
-This is a new paradigm and a new way of developping a UI, but it allows for a better maintainability and less time consuming changes to be made, especially in the long run.
+This is a new paradigm and a new way of developing a UI, but it allows for a better maintainability and less ttime-consumingchanges to be made, especially in the long run.
 
-Now that you have the basics, You are now ready to start to the study, Head out to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study/experimentation to get started. 
+Now that you have the basics, You are now ready to start to the study, Head back to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study/experimentation/README.md to get started. 
 
 
 
