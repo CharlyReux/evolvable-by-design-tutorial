@@ -173,12 +173,12 @@ However the calls for the API is not setup yet, so requesting to the backend won
 In the [User Service](frontend/src/services/UserService.ts), you can implement the getUserInfo() method with the following code:
 
 ```ts
-async getUserInfo(userId: number): Promise<User> {
+async getUserInfo(userId) {
     const response = await axios.get(`${this.baseUrl}/users/${userId}`)
     if (response.status !== 200) {
         throw new Error(`Failed to fetch user info: ${response.status}`);
     }
-    return response.data as User;
+    return response.data;
 }
 ```
 
@@ -229,26 +229,24 @@ In order for the library to work, we need an enhanced openApi specification file
 
 >*Note:* Some of the changes are made simpler for the sake of readability of this tutorial.
 
-First, we will start by setting up our UserService to use the library, in App.tsx, make the following changes :
-```tsx
+First, we will start by setting up our UserService to use the library, in App.jsx, make the following changes :
+```jsx
 function App() {
 - const userServices = new ProfileService('http://localhost:3000');
-+ const [userService, setUserService] = useState<UserService | null>(null);
-  const [currentId, setCurrentId] = useState<number | null>(null);
--  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentUser, setCurrentUser] = useState<SemanticResource | null>(null);
++ const [userService, setUserService] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
 
 + useEffect(() => {
 +   UserService.forApiAtUrl("http://localhost:3000/openapi.json").then(setUserService)
 + }, [])
 
-  const getUserInfos = (id: number | null) => {
+  const getUserInfos = (id) => {
     if (!id) {
       return;
     }
--    userService.getUserInfo(id)
-+    userService!.getUserInfo(id)
+    userService.getUserInfo(id)
       .then((user) => setCurrentUser(user))
       .catch((error) => alert(error));
     console.log('User info:', currentUser);
@@ -259,18 +257,15 @@ function App() {
 
 Now in our UserService we will make these changes:
 
-```ts
- -  private baseUrl: string;
- +  private pivo: Pivo;
-
- -   constructor(baseUrl: string) {
+```js
+ -   constructor(baseUrl) {
  -       this.baseUrl = baseUrl;
  -   }
- +   constructor(documentation: string) {
+ +   constructor(documentation) {
  +       this.pivo = new Pivo(documentation);
  +   }
 
- +   static async forApiAtUrl(url: string) {
+ +   static async forApiAtUrl(url) {
  +       const response = await axios.get(url)
  +       if (response.status === 200) {
  +           console.log(response.data)
@@ -289,7 +284,7 @@ We basically have made our service depend on the specification rather than on th
 
 #### Using Pivo
 
-However, our app still doesn't work as we need to use pivo in our implementation of the requests and in our ProfileCard component, instead of the URL.
+However, our app still doesn't work as we need to use pivo in our implementation of the request and in our ProfileCard component.
 
 First, we will replace the getUserInfo method to return a Semantic Resource 
 ```tsx
@@ -298,7 +293,7 @@ First, we will replace the getUserInfo method to return a Semantic Resource
      * @param userId the Id of the user to fetch
      * @returns The user Semantic object
      */
-    async getUserInfo(userId: number): Promise<SemanticResource> {
+    async getUserInfo(userId) {
 
         const getOperation = this.pivo
             .get("http://myVoc.org/vocab#user")
@@ -326,9 +321,9 @@ We now need to update our profileCard component accordingly, so that it can use 
 
 We provide a utility class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how our component looks like now.
 
-```tsx
-export default function ProfileCard(props: { user: SemanticResource }) {
-    const [user, setUser] = useState<SemanticResource>(props.user)
+```jsx
+export default function ProfileCard(props) {
+    const [user, setUser] = useState(props.user)
     useEffect(() => {
         setUser(props.user)
     }, [props.user])
@@ -372,7 +367,7 @@ export default function ProfileCard(props: { user: SemanticResource }) {
 > The component simplifies the usage of the library by providing a mapping between the semantic identifiers and their values.<br>
 > Without this component we could get values from the user with the following syntax:
 > ```ts
-> const firstName:string = await user.getOneValue("https://schema.org/givenName")
+> const firstName = await user.getOneValue("https://schema.org/givenName")
 >```
 ><br>
 <br>
@@ -432,7 +427,7 @@ And since the server handles hypermedia controls (with a `_link` attribute in th
 
 and a method like this one in our UserService:
 ```ts
-  async deleteUser(user: SemanticResource): Promise<SemanticResource> {
+  async deleteUser(user) {
       const deleteOperation = user.
           getRelation("http://myVoc.org/#rel/delete")//get the relations to a delete operation
           .map(relation => {
@@ -457,7 +452,7 @@ A working implementation of this can be found in the branch `original-implementa
 
 ### Conclusion
 
-This is a new paradigm and a new way of developing a UI, but it allows for a better maintainability and less ttime-consumingchanges to be made, especially in the long run.
+This is a new paradigm and a new way of developing a UI, but it allows for a better maintainability and less time-consuming changes to be made, especially in the long run.
 
 Now that you have the basics, You are now ready to start to the study, Head back to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study/experimentation/README.md to get started. 
 

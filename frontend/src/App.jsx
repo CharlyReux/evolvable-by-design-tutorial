@@ -7,7 +7,7 @@ import { TextField } from '@mui/material';
 import UserService from './services/UserService';
 
 function App() {
-  const userServices = new UserService('http://localhost:3000');
+  const userService = new UserService('http://localhost:3000');
   const [currentId, setCurrentId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -15,7 +15,7 @@ function App() {
     if (!id) {
       return;
     }
-    userServices.getUserInfo(id)
+    userService.getUserInfo(id)
       .then((user) => setCurrentUser(user))
       .catch((error) => alert(error));
     console.log('User info:', currentUser);
