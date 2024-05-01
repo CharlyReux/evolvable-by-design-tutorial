@@ -7,11 +7,6 @@ const WithSemanticDataRequired = ({
     mappings,
     children,
     loader
-}: {
-    data: any;
-    mappings: any;
-    children: (dataToDisplay: any) => React.ReactNode;
-    loader?: React.ReactNode;
 }) => {
     const dataToDisplay = usePivoData(data, mappings);
     if (data === undefined) {

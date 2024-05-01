@@ -1,10 +1,8 @@
 import axios from 'axios';
-import { User } from '../Models/User';
 
 class UserService {
-    private baseUrl: string;
 
-    constructor(baseUrl: string) {
+    constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -13,7 +11,7 @@ class UserService {
      * @param userId the Id of the user to fetch
      * @returns The user object
      */
-    async getUserInfo(userId: number): Promise<User> {
+    async getUserInfo(userId) {
       throw new Error('Not implemented');
     }
 }

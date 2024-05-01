@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export default function usePivoData (data:any, mappings:any) {
+export default function usePivoData (data, mappings) {
   const [resolvedData, setResolvedData] = useState({})
 
   useEffect(() => {

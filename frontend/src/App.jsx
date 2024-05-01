@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import './App.css'
-import { User } from './Models/User'
 import Button from '@mui/material/Button';
 import ProfileCard from './Components/ProfileCard';
 import { TextField } from '@mui/material';
@@ -9,10 +8,10 @@ import UserService from './services/UserService';
 
 function App() {
   const userServices = new UserService('http://localhost:3000');
-  const [currentId, setCurrentId] = useState<number | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentId, setCurrentId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const getUserInfos = (id: number | null) => {
+  const getUserInfos = (id) => {
     if (!id) {
       return;
     }
@@ -22,7 +21,7 @@ function App() {
     console.log('User info:', currentUser);
   }
 
-  const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIdChange = (event) => {
     setCurrentId(Number(event.target.value));
   }
 

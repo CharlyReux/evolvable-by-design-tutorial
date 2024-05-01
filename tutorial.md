@@ -166,7 +166,7 @@ On the [page](http://localhost:5173/) You should now see the simple application 
 
 The goal of the application is simply to display user information when entering an id and pressing the button.
 
-A simple UI is provided in [App.tsx](frontend/src/App.tsx), you can look around to see how it works. 
+A simple UI is provided in [App.jsx](frontend/src/App.jsx), you can look around to see how it works. 
 However the calls for the API is not setup yet, so requesting to the backend won't do much for now.
 
 

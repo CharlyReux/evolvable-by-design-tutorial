@@ -1,10 +1,9 @@
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { User } from '../Models/User';
 import { useState } from 'react';
 import { Typography } from '@mui/material';
 
-export default function ProfileCard(props: { user: User }) {
+export default function ProfileCard(props) {
     const user = props.user
 
     return (
