@@ -1,5 +1,16 @@
 # Tutorial
 
+## What you will need for this tutorial
+
+There two easiest ways are either remotely, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), with which you will be able to start instantly(It is free, unless you go over 60 hours of runtime). Or locally, by using a Dev Container(you will Docker, VS Code or IntelliJ and the extension `ms-vscode-remote.remote-containers`).
+#### Using a Dev Container TODO : try
+If using a Dev Container, you will first have to press F1 and run `Dev Containers: Clone Repository in Container Volume`  
+Enter the repository name `CharlyReux/evolvable-by-design-tutorial`  
+The repository should load, and you are ready to go.
+
+#### Locally
+If you are not willing to use GitHub CodeSpace or a Dev Container, you can try this tutorial locally, for this you will need the following dependencies:
+TODO
 
 
 ## What is Pivo?
@@ -165,12 +176,14 @@ On the [page](http://localhost:5173/) You should now see the simple application 
 ### Displaying user information
 
 The goal of the application is simply to display user information when entering an id and pressing the button.
+There are curently two users, with the ids 1 and 2, but for now they are not displayed, as the app is not set up yet.
+
 
 A simple UI is provided in [App.jsx](frontend/src/App.jsx), you can look around to see how it works. 
 However the calls for the API is not setup yet, so requesting to the backend won't do much for now.
 
 
-In the [User Service](frontend/src/services/UserService.ts), you can implement the getUserInfo() method with the following code:
+In the [User Service](frontend/src/services/UserService.js), you can implement the getUserInfo() method with the following code:
 
 ```ts
 async getUserInfo(userId) {
