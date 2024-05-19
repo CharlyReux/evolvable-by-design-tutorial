@@ -2,7 +2,7 @@
 
 ## What you will need for this tutorial
 
-There two easiest ways are either remotely, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), It should take a bit of time to set up, but with it you will be able to start instantly(It is free, unless you go over 60 hours of runtime). Or locally, by using a Dev Container(you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`).
+The two easiest ways are either remotely, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), It should take a bit of time to set up, but with it you will be able to start instantly(It is free, unless you go over 60 hours of runtime). Or locally, by using a Dev Container(you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`).
 #### Using a Dev Container TODO : try
 If using a Dev Container, you will first have to press F1 and run `Dev Containers: Clone Repository in Container Volume`  
 Enter the repository name `CharlyReux/evolvable-by-design-tutorial`  
@@ -12,6 +12,8 @@ The repository should load, and you are ready to go.
 If you are not willing to use GitHub CodeSpace or a Dev Container, you can try this tutorial locally, for this you will need the following dependencies:
 TODO
 
+
+> once you are setup you can start the tutorial by following the steps below.
 
 ## What is Pivo?
 It has become common practice: we use RESTful APIs to access and manipulate data on frontend applications. And to build these frontends, we separate the logic of the view and navigation from the logic that makes the REST API calls. While the logic of the view is materialized through components, the logic of the interactions with the REST API is dispatched into services. For example, all the calls to the Issues on the GitHub API would be done in an IssueService.
