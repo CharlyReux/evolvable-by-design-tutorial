@@ -2,19 +2,7 @@
   "name": "tutorial-pivo-devcontainer",
   
   "image":"charlyreux/pivo-tutorial",
-  /* "features": {
-    "ghcr.io/devcontainers/features/java:1": {
-      "version":"21",
-      "installMaven":"true",
-      "mavenVersion":"3.6.3"
-    },
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/node:1": {
-      "version":"21.7.2"
-    }
 
-
-  } ,*/
   "customizations": {
     "vscode": {
       "extensions": ["42Crunch.vscode-openapi","dsznajder.es7-react-js-snippets","EthanSK.restore-terminals"],
