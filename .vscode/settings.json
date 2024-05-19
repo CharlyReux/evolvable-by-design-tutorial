@@ -3,28 +3,33 @@
         {
             "splitTerminals": [
                 {
-                    "name": "server",
+                    "name": "backendV1",
+                    "shouldRunCommands": false,
+                    "commands": [
+                        "cd backend/v1",
+                        "npm run dev"
+                    ]
+                },
+                {
+                    "name": "backendV2",
                     "shouldRunCommands": false,
                     "commands": [
                         "cd backend/v2",
                         "npm run dev"
                     ]
                 },
-                {
-                    "name": "client",
-                    "shouldRunCommands": false,
-                    "commands": [
-                        "cd frontend",
-                        "npm run dev"
-                    ]
-                }
+                
             ]
         },
         {
             "splitTerminals": [
                 {
-                    "name": "Command",
-                    "shouldRunCommands": false,
+                    "name": "client",
+                    "shouldRunCommands": true,
+                    "commands": [
+                        "cd frontend",
+                        "npm run dev"
+                    ]
                 }
             ]
         }

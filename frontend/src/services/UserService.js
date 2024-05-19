@@ -12,8 +12,12 @@ class UserService {
      * @returns The user object
      */
     async getUserInfo(userId) {
-      throw new Error('Not implemented');
-    }
+      const response = await axios.get(`${this.baseUrl}/users/${userId}`)
+      if (response.status !== 200) {
+          throw new Error(`Failed to fetch user info: ${response.status}`);
+      }
+      return response.data;
+  }
 }
 
 export default UserService;

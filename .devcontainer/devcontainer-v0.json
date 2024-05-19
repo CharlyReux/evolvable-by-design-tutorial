@@ -1,8 +1,8 @@
 {
   "name": "tutorial-pivo-devcontainer",
   
-  "image":"charlyreux/pivo-tutorial",
-  /* "features": {
+  "image":"mcr.microsoft.com/devcontainers/universal",
+  "features": {
     "ghcr.io/devcontainers/features/java:1": {
       "version":"21",
       "installMaven":"true",
@@ -14,13 +14,10 @@
     }
 
 
-  } ,*/
+  },
   "customizations": {
     "vscode": {
-      "extensions": ["42Crunch.vscode-openapi","dsznajder.es7-react-js-snippets","EthanSK.restore-terminals"],
-      "settings": {
-
-      }
+      "extensions": ["42Crunch.vscode-openapi","dsznajder.es7-react-js-snippets"]
     }
   },
   "initializeCommand": {
@@ -28,6 +25,7 @@
     "backendv2Install": "cd backend/v1 && npm install",
     "frontendInstall": "cd frontend && npm install"
   },
+  "postAttachCommand": "cd frontend && npm run dev",
   "forwardPorts": [3000,5173],
   "portsAttributes": {
     "3000": {

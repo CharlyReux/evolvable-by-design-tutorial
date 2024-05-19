@@ -2,7 +2,7 @@
 
 ## What you will need for this tutorial
 
-There two easiest ways are either remotely, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), with which you will be able to start instantly(It is free, unless you go over 60 hours of runtime). Or locally, by using a Dev Container(you will Docker, VS Code or IntelliJ and the extension `ms-vscode-remote.remote-containers`).
+There two easiest ways are either remotely, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), It should take a bit of time to set up, but with it you will be able to start instantly(It is free, unless you go over 60 hours of runtime). Or locally, by using a Dev Container(you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`).
 #### Using a Dev Container TODO : try
 If using a Dev Container, you will first have to press F1 and run `Dev Containers: Clone Repository in Container Volume`  
 Enter the repository name `CharlyReux/evolvable-by-design-tutorial`  
