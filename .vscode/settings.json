@@ -4,18 +4,16 @@
             "splitTerminals": [
                 {
                     "name": "backendV1",
-                    "shouldRunCommands": false,
+                    "shouldRunCommands": true,
                     "commands": [
-                        "cd backend/v1",
-                        "npm run dev"
+                        "cd backend/v1"
                     ]
                 },
                 {
                     "name": "backendV2",
-                    "shouldRunCommands": false,
+                    "shouldRunCommands": true,
                     "commands": [
-                        "cd backend/v2",
-                        "npm run dev"
+                        "cd backend/v2"
                     ]
                 },
                 
@@ -25,10 +23,9 @@
             "splitTerminals": [
                 {
                     "name": "client",
-                    "shouldRunCommands": false,
+                    "shouldRunCommands": true,
                     "commands": [
-                        "cd frontend",
-                        "npm run dev"
+                        "cd frontend"
                     ]
                 }
             ]

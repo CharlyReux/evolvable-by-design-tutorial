@@ -173,7 +173,12 @@ npm install
 npm run dev
 ```
 
-On the [page](http://localhost:5173/) You should now see the simple application that you will work on.
+> :warning: If you are working on github codespace, the backend port needs to be public in order for the application to work. You will have to run the following command:
+> ```sh
+> gh codespace ports visibility 3000:public -c $CODESPACE_NAME
+> ```
+
+On either http://localhost:5173/ or https://CODESPACE_NAME-5173.app.github.dev You should now see the simple application that you will work on.
 
 ### Displaying user information
 
