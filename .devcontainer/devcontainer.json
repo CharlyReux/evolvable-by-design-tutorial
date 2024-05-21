@@ -16,13 +16,17 @@
     "backendv2Install": "cd backend/v1 && npm install",
     "frontendInstall": "cd frontend && npm install"
   },
-  "postAttachCommand": ".devcontainer/setup.sh",
   "appPort": [3000,5173],
   "forwardPorts": [3000,5173],
+  "postAttachCommand": {
+    "portForwardFront":"gh codespace ports forward 5173:public -c $CODESPACE_NAME",
+    "portForwardback":"gh codespace ports forward 3000:public -c $CODESPACE_NAME",
+    "portVisBack":"gh codespace ports visibility 3000:public -c $CODESPACE_NAME"
+  },
   "portsAttributes": {
     "3000": {
       "label": "backend",
-      "onAutoForward": "notify"
+      "onAutoForward": "ignore"
     },
     "5173":{
       "label": "frontend",
