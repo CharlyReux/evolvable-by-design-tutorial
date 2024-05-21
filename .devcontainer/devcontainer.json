@@ -16,7 +16,7 @@
     "backendv2Install": "cd backend/v1 && npm install",
     "frontendInstall": "cd frontend && npm install"
   },
-  "postAttachCommand": "gh codespace ports visibility 3000:public -c $CODESPACE_NAME",
+  "postAttachCommand": "/bin/bash .devcontainer/setupPort.sh",
   "forwardPorts": [
     3000,
     5173
