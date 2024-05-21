@@ -14,6 +14,10 @@ app.listen(port, () => {
 app.get('/openapi.json', (req, res) => {
   fs.readFile('data/openapi.yml', 'utf8', (err, data) => {
     jsonOpenAPI = yaml.load(data)
+    const back_url = process.env.CODESPACE_NAME ? `https://${process.env.CODESPACE_NAME}-3000.app.github.dev` : "http://localhost:3000"
+
+    jsonOpenAPI.servers[0].url = back_url
+
     res.setHeader('Content-Type', 'application/json')
     res.send(jsonOpenAPI)
   })

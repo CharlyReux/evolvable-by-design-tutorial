@@ -161,7 +161,7 @@ class CardService {
 
 This approach allows for a co-evolution of the front-end and the back-end, and covers the breaking changes we discussed earlier.
 > [!NOTE]
-> this is a simplified example, especially in the component definition, but we will cover a real case right below.
+> This is a simplified example, especially in the component definition, but we will cover a real case right below.
 
 ## Do it yourself: Make an application *Evolvable-By-Design*
 
@@ -169,7 +169,7 @@ This approach allows for a co-evolution of the front-end and the back-end, and c
 To get you started with the *Pivo* approach, you will be making a simple application to display information about a user
 
 > [!NOTE]
-> If you are in a codespace devContainer, terminals should already be situated in the appropriate directories 
+> If you are in a CodeSpace or a local devContainer, terminals should already be situated in the appropriate directories 
 
 Start by launching the back-end with the commands
  ```sh
@@ -199,7 +199,7 @@ There are curently two users, with the ids 1 and 2, but for now they are not dis
 
 
 A simple UI is provided in [App.jsx](frontend/src/App.jsx), you can look around to see how it works. 
-However the calls for the API is not setup yet, so requesting to the backend won't do much for now.
+However the calls for the API are not implemented yet, so requesting to the backend won't do much for now.
 
 
 In the [User Service](frontend/src/services/UserService.js), you can implement the getUserInfo() method with the following code:
@@ -235,9 +235,9 @@ And you should see in your front-end that requesting for a user does not work an
 In order to fix it, you now have to
 - First, Change the endpoint used in the `getUserInfo()` method from `${this.baseUrl}/users/${userId}` to `${this.baseUrl}/user/${userId}`.
 > However, it still does not work because the id must not be in the path anymore.
-- To fix this, change the axios request to 
+- To actually fix this, you need to change the whole axios request to 
   - `` await axios.get(`${this.baseUrl}/user`,{params: {id: userId}}) ``
-`
+
 
 
 Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time-consuming issue when the codeBase starts getting bigger, or maybe when you haven't been maintaining the application for a while, so it takes you longer to get back into it.
@@ -246,33 +246,33 @@ Now, your application should be working. Of course, these were simple evolutions
 
 What if your application could evolve as the same time as the back-end, without anyone having to make the manual changes?
 
-This is the idea of the *Pivo* library that we will now leverage to make our application resilient to changes.
+This is the idea of the *Pivo* library, that we will now leverage to make our application resilient to changes.
 
-In your front-end, run the following command:
+Stop the front-end, and run the following command:
 ```sh
 npm i @evolvable-by-design/pivo
 ```
 
-The documentation can be found [here](https://github.com/evolvable-by-design/pivo/tree/master/packages/pivo)
+The documentation can be found [here]() TODO
 
-In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.json` endpoint(http://localhost:3000/openapi.json).
+In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.json` endpoint.
 
 #### Setting up Pivo in our application
 
 > [!NOTE]
-> Some of the changes are made simpler for the sake of readability of this tutorial.
+> The changes are simplified for readability, for example, we haven't provided the things imports statements needed.
 
 First, we will start by setting up our UserService to use the library, in App.jsx, make the following changes :
 ```jsx
 function App() {
-- const userServices = new ProfileService('http://localhost:3000');
+- const userServices = new ProfileService(backend_url);
 + const [userService, setUserService] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
 
 + useEffect(() => {
-+   UserService.forApiAtUrl("http://localhost:3000/openapi.json").then(setUserService)
++    UserService.forApiAtUrl(`${backend_url}/openapi.json`).then(setUserService)
 + }, [])
 
   const getUserInfos = (id) => {
@@ -347,7 +347,7 @@ First, we will replace the getUserInfo method to return a Semantic Resource
 > The library leverage the enhanced openApi file in order to automatically infer the appropriate parameters, methods, etc.<br>
 > To get the operation we need, we ask the library to find an operation that can get us a user (defined by our vocabulary "http://myVoc.org/vocab#user").<br>
 > We then invoke the operation with the userId parameter and the appropriate entity https://schema.org/identifier, note that we don't have to tell the application where the parameter needs to be defined, the library will automatically infer whether it is in the path, the body, etc.<br>
-> You can check where the two entity identifier `http://myVoc.org/vocab#user` and `https://schema.org/identifier` are defined in http://localhost:3000/openapi.yml in order to get a feel of how the library works.<br>
+> You can check where the two entity identifier `http://myVoc.org/vocab#user` and `https://schema.org/identifier` are defined in the [v1](backend/v1/data/openapi.yml) and [v2](backend/v2/data/openapi.yml) openapi documentations in order to get a feel of how the library works.<br>
 > <br>
 
 We now need to update our profileCard component accordingly, so that it can use the new type of data the service gets.

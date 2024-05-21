@@ -13,7 +13,7 @@
   },
   "initializeCommand": {
     "backendv1Install": "cd backend/v1 && npm install",
-    "backendv2Install": "cd backend/v1 && npm install",
+    "backendv2Install": "cd backend/v2 && npm install",
     "frontendInstall": "cd frontend && npm install"
   },
   "forwardPorts": [
