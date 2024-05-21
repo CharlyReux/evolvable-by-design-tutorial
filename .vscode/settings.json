@@ -25,7 +25,7 @@
             "splitTerminals": [
                 {
                     "name": "client",
-                    "shouldRunCommands": true,
+                    "shouldRunCommands": false,
                     "commands": [
                         "cd frontend",
                         "npm run dev"
