@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "src/config.js"],
   "references": [{ "path": "./jsconfig.node.json" }]
 }

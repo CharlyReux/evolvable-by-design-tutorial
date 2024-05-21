@@ -6,10 +6,10 @@ import ProfileCard from './Components/ProfileCard';
 import { TextField } from '@mui/material';
 import UserService from './services/UserService';
 
-import {BACKEND_URL} from "../config"
+import backend_url from './config'; 
 
 function App() {
-  const userService = new UserService(BACKEND_URL);
+  const userService = new UserService(backend_url);
   const [currentId, setCurrentId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -20,7 +20,6 @@ function App() {
     userService.getUserInfo(id)
       .then((user) => setCurrentUser(user))
       .catch((error) => alert(error));
-    console.log('User info:', currentUser);
   }
 
   const handleIdChange = (event) => {
