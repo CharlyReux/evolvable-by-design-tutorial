@@ -1,14 +1,14 @@
 {
   "name": "tutorial-pivo-devcontainer",
-  
-  "image":"charlyreux/pivo-tutorial",
-
+  "image": "charlyreux/pivo-tutorial",
   "customizations": {
     "vscode": {
-      "extensions": ["42Crunch.vscode-openapi","dsznajder.es7-react-js-snippets","EthanSK.restore-terminals"],
-      "settings": {
-
-      }
+      "extensions": [
+        "42Crunch.vscode-openapi",
+        "dsznajder.es7-react-js-snippets",
+        "EthanSK.restore-terminals"
+      ],
+      "settings": {}
     }
   },
   "initializeCommand": {
@@ -16,14 +16,21 @@
     "backendv2Install": "cd backend/v1 && npm install",
     "frontendInstall": "cd frontend && npm install"
   },
-  "forwardPorts": [3000,5173],
-  "appPort": [3000,5173],
+  "postAttachCommand": "gh codespace ports visibility 3000:public -c $CODESPACE_NAME",
+  "forwardPorts": [
+    3000,
+    5173
+  ],
+  "appPort": [
+    3000,
+    5173
+  ],
   "portsAttributes": {
     "3000": {
       "label": "backend",
       "onAutoForward": "notify"
     },
-    "5173":{
+    "5173": {
       "label": "frontend",
       "onAutoForward": "openBrowser"
     }

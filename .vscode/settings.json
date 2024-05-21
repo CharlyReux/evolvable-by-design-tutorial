@@ -32,17 +32,6 @@
                     ]
                 }
             ]
-        },
-        /* {"splitTerminals": [
-            {
-                "name": "client",
-                "shouldRunCommands": true,
-                "commands": [
-                    "gh codespace ports forward 5173:5173 -c $CODESPACE_NAME &",
-                    "gh codespace ports forward 3000:3000 -c $CODESPACE_NAME &",
-                    "gh codespace ports visibility 3000:public -c $CODESPACE_NAME &"
-                ]
-            }
-        ]} */
+        }
     ]
 }
