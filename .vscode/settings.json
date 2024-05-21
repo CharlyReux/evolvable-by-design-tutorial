@@ -33,7 +33,7 @@
                 }
             ]
         },
-        {"splitTerminals": [
+        /* {"splitTerminals": [
             {
                 "name": "client",
                 "shouldRunCommands": true,
@@ -43,6 +43,6 @@
                     "gh codespace ports visibility 3000:public -c $CODESPACE_NAME &"
                 ]
             }
-        ]}
+        ]} */
     ]
 }
