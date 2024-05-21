@@ -4,7 +4,7 @@
 
 The two easiest ways are either **remotely**, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), with it, you will be able to start instantly (It is free, unless you go over 60 hours of runtime). Or **locally**, by using a Dev Container (you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`). In either case, it should take a little bit of time to set up your environment.
 #### Using a Dev Container TODO : try
-If using a Dev Container, you will first have to press F1 and run `Dev Containers: Clone Repository in Container Volume`  
+If using a Dev Container, in VS Code, you will first have to press F1 and run `Dev Containers: Clone Repository in Container Volume`  
 Enter the repository name `CharlyReux/evolvable-by-design-tutorial`  
 The repository should load, and you are ready to go.
 
@@ -18,7 +18,7 @@ TODO
 ## What is Pivo?
 It has become common practice: we use RESTful APIs to access and manipulate data on frontend applications. And to build these frontends, we separate the logic of the view and navigation from the logic that makes the REST API calls. While the logic of the view is materialized through components, the logic of the interactions with the REST API is dispatched into services. For example, all the calls to the Issues on the GitHub API would be done in an IssueService.
 
-But one issue arises, when the REST API changes, the front-end application is very likely to break. Something as little as changing the name of a field in a back-end can break a front-end implementation. Therefore, we devised an approach called *Evolvable-By-Design*, and a framework named *Pivo* with the purpose of tackling with the co-evolution of the front-end and the back-end.  
+But one problem arises, when the REST API changes, the front-end application is very likely to break. Something as little as changing the name of a field in a back-end can break a front-end implementation. Therefore, we devised an approach called *Evolvable-By-Design*, and a framework named *Pivo* with the purpose of tackling with the co-evolution of the front-end and the back-end.  
 
 ## Example
 
@@ -113,6 +113,13 @@ components:
           type: integer
 ```
 
+We introduce three new descriptors:
+- `x-id`: which helps identifying an item. 
+- `x-type`: which helps to define an item.
+- `x-relation`: that is defined only in links descriptors, and that is used to check for existing links between endpoints.  
+
+If those aren't really clear for now, they should make more sense by the end of this tutorial.
+
 We can change our implementation to leverage it and make our component *Evolvable-By-Design*:
 
 ```jsx
@@ -153,12 +160,15 @@ class CardService {
 ```
 
 This approach allows for a co-evolution of the front-end and the back-end, and covers the breaking changes we discussed earlier.
-
+> *Note*: this is a simplified example, especially in the component definition, but we will cover a real case right below.
 
 ## Do it yourself: Make an application *Evolvable-By-Design*
 
 ### Introduction
 To get you started with the *Pivo* approach, you will be making a simple application to display information about a user
+
+> [!Note]
+> testing
 
 Start by launching the back-end with the commands
  ```sh
