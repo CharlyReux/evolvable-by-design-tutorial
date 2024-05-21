@@ -16,6 +16,8 @@
     "backendv2Install": "cd backend/v1 && npm install",
     "frontendInstall": "cd frontend && npm install"
   },
+  "postAttachCommand": ".devcontainer/setup.sh",
+
   "forwardPorts": [3000,5173],
   "portsAttributes": {
     "3000": {
