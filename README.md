@@ -8,7 +8,7 @@ If using a Dev Container, you will first have to press F1 and run `Dev Container
 Enter the repository name `CharlyReux/evolvable-by-design-tutorial`  
 The repository should load, and you are ready to go.
 
-#### Locally
+#### Without Dev Containers
 If you are not willing to use GitHub CodeSpace or a Dev Container, you can try this tutorial locally, for this you will need the following dependencies:
 TODO
 

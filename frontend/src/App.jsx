@@ -6,8 +6,10 @@ import ProfileCard from './Components/ProfileCard';
 import { TextField } from '@mui/material';
 import UserService from './services/UserService';
 
+import BACKEND_URL from "../config"
+
 function App() {
-  const userService = new UserService('http://localhost:3000');
+  const userService = new UserService(BACKEND_URL);
   const [currentId, setCurrentId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
