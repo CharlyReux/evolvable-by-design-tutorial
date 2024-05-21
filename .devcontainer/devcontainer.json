@@ -19,14 +19,14 @@
   "appPort": [3000,5173],
   "forwardPorts": [3000,5173],
   "postAttachCommand": {
-    "portForwardFront":"gh codespace ports forward 5173:public -c $CODESPACE_NAME",
-    "portForwardback":"gh codespace ports forward 3000:public -c $CODESPACE_NAME",
+    "portForwardFront":"gh codespace ports forward 5173:5173 -c $CODESPACE_NAME",
+    "portForwardback":"gh codespace ports forward 3000:3000 -c $CODESPACE_NAME",
     "portVisBack":"gh codespace ports visibility 3000:public -c $CODESPACE_NAME"
   },
   "portsAttributes": {
     "3000": {
       "label": "backend",
-      "onAutoForward": "ignore"
+      "onAutoForward": "notify"
     },
     "5173":{
       "label": "frontend",
