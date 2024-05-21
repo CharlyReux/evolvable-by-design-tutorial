@@ -160,15 +160,16 @@ class CardService {
 ```
 
 This approach allows for a co-evolution of the front-end and the back-end, and covers the breaking changes we discussed earlier.
-> *Note*: this is a simplified example, especially in the component definition, but we will cover a real case right below.
+> [!NOTE]
+> this is a simplified example, especially in the component definition, but we will cover a real case right below.
 
 ## Do it yourself: Make an application *Evolvable-By-Design*
 
 ### Introduction
 To get you started with the *Pivo* approach, you will be making a simple application to display information about a user
 
-> [!Note]
-> testing
+> [!NOTE]
+> If you are in a codespace devContainer, terminals should already be situated in the appropriate directories 
 
 Start by launching the back-end with the commands
  ```sh
@@ -183,7 +184,8 @@ npm install
 npm run dev
 ```
 
-> :warning: If you are working on github codespace, the backend port needs to be public in order for the application to work. You will have to run the following command:
+> [!WARNING]
+> If you are working on github codespace, the backend port needs to be public in order for the application to work. You will have to run the following command:
 > ```sh
 > gh codespace ports visibility 3000:public -c $CODESPACE_NAME
 > ```
@@ -257,7 +259,8 @@ In order for the library to work, we need an enhanced openApi specification file
 
 #### Setting up Pivo in our application
 
->*Note:* Some of the changes are made simpler for the sake of readability of this tutorial.
+> [!NOTE]
+> Some of the changes are made simpler for the sake of readability of this tutorial.
 
 First, we will start by setting up our UserService to use the library, in App.jsx, make the following changes :
 ```jsx
@@ -447,7 +450,8 @@ For example, the backend provides a way to delete a user, as can be seen in the 
         description: user deleted
 ```
 
-> *Note*: the delete method is a dummy method, it is just for explanation purposes.
+> [!NOTE]
+> the delete method is a dummy method, it is just for explanation purposes.
 
 And since the server handles hypermedia controls (with a `_link` attribute in the responses), in our user ProfileCard, we can have an optional button that can be displayed if a relation to a delete method exists:
  
