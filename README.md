@@ -3,15 +3,10 @@
 ## What you will need for this tutorial
 
 The two easiest ways are either **remotely**, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), with it, you will be able to start instantly (It is free, unless you go over 60 hours of runtime). Or **locally**, by using a Dev Container (you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`). In either case, it should take a little bit of time to set up your environment.
-#### Using a Dev Container TODO : try
+#### Using a Dev Container
 If using a Dev Container, in VS Code, you will first have to press F1 and run `Dev Containers: Clone Repository in Container Volume`  
 Enter the repository name `CharlyReux/evolvable-by-design-tutorial`  
 The repository should load, and you are ready to go.
-
-#### Without Dev Containers
-If you are not willing to use GitHub CodeSpace or a Dev Container, you can try this tutorial locally, for this you will need the following dependencies:
-TODO
-
 
 > once you are setup you can start the tutorial by following the steps below.
 
@@ -472,7 +467,7 @@ and a method like this one in our UserService:
           })//gets the operation of the delete
           .getOrThrow(
               () =>
-                  new Error('The REST API operation to delete a todo is not available')
+                  new Error('The REST API operation to delete a user is not available')
           )
           
       const response = await deleteOperation.invoke()//invoke the delete operation, without having to specify the id
