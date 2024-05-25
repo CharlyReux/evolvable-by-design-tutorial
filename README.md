@@ -4,11 +4,10 @@
 
 The two easiest ways are either **remotely**, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), with it, you will be able to start instantly (It is free, unless you go over 60 hours of runtime). Or **locally**, by using a Dev Container (you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`). In either case, it should take a little bit of time to set up your environment.
 #### Using a Dev Container
-If using a Dev Container, in VS Code, you will first have to press F1 and run `Dev Containers: Clone Repository in Container Volume`  
-Enter the repository name `CharlyReux/evolvable-by-design-tutorial`  
+If using a Dev Container, in VS Code, you will first have to clone this repository, then press F1 and run `Dev Containers: Reopen in container`    
 The repository should load, and you are ready to go.
 
-> once you are setup you can start the tutorial by following the steps below.
+> Once you are set up you can start the tutorial by following the steps below.
 
 ## What is Pivo?
 It has become common practice: we use RESTful APIs to access and manipulate data on frontend applications. And to build these frontends, we separate the logic of the view and navigation from the logic that makes the REST API calls. While the logic of the view is materialized through components, the logic of the interactions with the REST API is dispatched into services. For example, all the calls to the Issues on the GitHub API would be done in an IssueService.
@@ -52,7 +51,7 @@ Here are some changes that would break it:
 - The location of the id is changed from the URL to the request body.
 - A non-admin user is not allowed to delete a card anymore.
 
-To solve that, we leverage Semantic data and the OpenApi Specification.
+To solve that, we leverage Semantic data and the OpenAPI Specification.
 With an OpenAPI specification enhanced with Semantic descriptors like this one:
 ```yml
 paths:
@@ -109,7 +108,7 @@ components:
 ```
 
 We introduce three new descriptors:
-- `x-id`: which helps identifying an item. 
+- `x-id`: which helps to identify an item. 
 - `x-type`: which helps to define an item.
 - `x-relation`: that is defined only in links descriptors, and that is used to check for existing links between endpoints.  
 
@@ -190,7 +189,7 @@ On either http://localhost:5173/ or https://CODESPACE_NAME-5173.app.github.dev Y
 ### Displaying user information
 
 The goal of the application is simply to display user information when entering an id and pressing the button.
-There are curently two users, with the ids 1 and 2, but for now they are not displayed, as the app is not set up yet.
+There are currently two users, with the ids 1 and 2, but for now they are not displayed, as the app is not set up yet.
 
 
 A simple UI is provided in [App.jsx](frontend/src/App.jsx), you can look around to see how it works. 
@@ -338,7 +337,7 @@ First, we will replace the getUserInfo method to return a Semantic Resource
 
 
 > ##### *Explanation*
-> A semantic resource is simply an object that contains everything that can be inferred from the specification and the response object(links, response, relations, etc)<br>
+> A semantic resource is simply an object that contains everything that can be inferred from the specification and the response object(links, response, relations, etc.)<br>
 > The library leverage the enhanced openApi file in order to automatically infer the appropriate parameters, methods, etc.<br>
 > To get the operation we need, we ask the library to find an operation that can get us a user (defined by our vocabulary "http://myVoc.org/vocab#user").<br>
 > We then invoke the operation with the userId parameter and the appropriate entity https://schema.org/identifier, note that we don't have to tell the application where the parameter needs to be defined, the library will automatically infer whether it is in the path, the body, etc.<br>
