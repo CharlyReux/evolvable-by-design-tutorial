@@ -247,7 +247,7 @@ Stop the front-end, and run the following command:
 npm i @evolvable-by-design/pivo
 ```
 
-The documentation can be found [here]() TODO
+The documentation can be found [here](https://github.com/CharlyReux/evolvable-by-design-research/blob/master/experiments/crossover-developers-study/Pivo-documentation.md)
 
 In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.json` endpoint.
 
