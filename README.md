@@ -2,7 +2,7 @@
 
 ## What you will need for this tutorial
 
-The two easiest ways are either **remotely**, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), with it, you will be able to start instantly (It is free, unless you go over 60 hours of runtime). Or **locally**, by using a Dev Container (you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`). In either case, it should take a little bit of time to set up your environment.
+The two easiest ways are either **remotely**, in a GitHub CodeSpace via this [link](https://github.com/codespaces/new?template_repository=CharlyReux/evolvable-by-design-tutorial), with it, you will be able to start instantly (It is free, unless you go over 60 hours of runtime). Or **locally**, by using a Dev Container (you will need Docker, VS Code and the extension `ms-vscode-remote.remote-containers`).
 #### Using a Dev Container
 If using a Dev Container, in VS Code, you will first have to clone this repository, then press F1 and run `Dev Containers: Reopen in container`    
 The repository should load, and you are ready to go.
@@ -112,9 +112,7 @@ We introduce three new descriptors:
 - `x-type`: which helps to define an item.
 - `x-relation`: that is defined only in links descriptors, and that is used to check for existing links between endpoints.  
 
-If those aren't really clear for now, they should make more sense by the end of this tutorial.
-
-We can change our implementation to leverage it and make our component *Evolvable-By-Design*:
+This implementation can be changed to leverage the openAPI descriptors and make the component *Evolvable-By-Design*:
 
 ```jsx
 const DELETE_SEMANTICS = 'http://myVoc.org/vocab#rel/deleteCard' 
@@ -229,12 +227,12 @@ And you should see in your front-end that requesting for a user does not work an
 In order to fix it, you now have to
 - First, Change the endpoint used in the `getUserInfo()` method from `${this.baseUrl}/users/${userId}` to `${this.baseUrl}/user/${userId}`.
 > However, it still does not work because the id must not be in the path anymore.
-- To actually fix this, you need to change the whole axios request to 
+- To **actually** fix this, you need to change the whole axios request to 
   - `` await axios.get(`${this.baseUrl}/user`,{params: {id: userId}}) ``
 
 
 
-Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time-consuming issue when the codeBase starts getting bigger, or maybe when you haven't been maintaining the application for a while, so it takes you longer to get back into it.
+Now, your application should be working. Of course, these were simple evolutions in the backend that do not require many changes to be made. But this can quickly become a time-consuming issue when the code base starts getting bigger, or maybe when you haven't been maintaining the application for a while, so it takes you longer to get back into it.
 
 ### Making the application *Evolvable-By-Design*
 
@@ -259,7 +257,7 @@ In order for the library to work, we need an enhanced openApi specification file
 First, we will start by setting up our UserService to use the library, in App.jsx, make the following changes :
 ```jsx
 function App() {
-- const userServices = new ProfileService(backend_url);
+- const userServices = new userService(backend_url);
 + const [userService, setUserService] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -346,7 +344,7 @@ First, we will replace the getUserInfo method to return a Semantic Resource
 
 We now need to update our profileCard component accordingly, so that it can use the new type of data the service gets.
 
-We provide a utility class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how our component looks like now.
+We provide a utility class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how you should change the ProfileCard Component.
 
 ```jsx
 export default function ProfileCard(props) {
@@ -407,6 +405,7 @@ npm run dev
 
 
 #### More features
+This part is not mandatory to implement, it is just to give you an overview of what is possible to do with pivo.
 
 These were of course simple changes, but the library allows our application to have convenient behaviors.
 
@@ -482,7 +481,7 @@ A working implementation of this can be found in the branch `original-implementa
 
 This is a new paradigm and a new way of developing a UI, but it allows for a better maintainability and less time-consuming changes to be made, especially in the long run.
 
-Now that you have the basics, You are now ready to start to the study, Head back to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study/experimentation/README.md to get started. 
+Answer the tutorial section in the google form, and then, now that you have the basics, You are now ready to start to the study, Head back to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study to get started. 
 
 
 
