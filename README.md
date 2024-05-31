@@ -251,11 +251,11 @@ In order for the library to work, we need an enhanced openApi specification file
 
 #### Setting up Pivo in our application
 
-> [!NOTE]
-> The changes are simplified for readability, for example, we haven't provided the things imports statements needed.
 
 First, we will start by setting up our UserService to use the library, in App.jsx, make the following changes :
 ```jsx
++ import { useEffect } from 'react';
+
 function App() {
 - const userServices = new userService(backend_url);
 + const [userService, setUserService] = useState(null);
@@ -283,6 +283,8 @@ function App() {
 Now in our UserService we will make these changes:
 
 ```js
+ +   import Pivo from '@evolvable-by-design/pivo';
+
  -   constructor(baseUrl) {
  -       this.baseUrl = baseUrl;
  -   }
@@ -347,6 +349,8 @@ We now need to update our profileCard component accordingly, so that it can use 
 We provide a utility class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how you should change the ProfileCard Component.
 
 ```jsx
+import { useState } from 'react';
+
 export default function ProfileCard(props) {
     const [user, setUser] = useState(props.user)
     useEffect(() => {
