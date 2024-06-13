@@ -247,7 +247,7 @@ npm i @evolvable-by-design/pivo
 
 The documentation can be found [here](https://github.com/CharlyReux/evolvable-by-design-research/blob/master/experiments/crossover-developers-study/Pivo-documentation.md)
 
-In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the `/openapi.json` endpoint.
+In order for the library to work, we need an enhanced openApi specification file that leverages semantic annotations, that is provided in each of the backends at the OPTIONS `/openapi.json` endpoint, or [here](backend/v1/data/openapi.yml) and [here](backend/v2/data/openapi.yml).
 
 #### Setting up Pivo in our application
 
@@ -293,7 +293,7 @@ Now in our UserService we will make these changes:
  +   }
 
  +   static async forApiAtUrl(url) {
- +       const response = await axios.get(url)
+ +       const response = await axios.options(url)
  +       if (response.status === 200) {
  +           console.log(response.data)
  +           return new UserService(response.data)
@@ -349,7 +349,8 @@ We now need to update our profileCard component accordingly, so that it can use 
 We provide a utility class *`WithSemanticDataRequired`* that simplifies the usage of the library, here is how you should change the ProfileCard Component.
 
 ```jsx
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import WithSemanticDataRequired from '../pivoUtils/WithSemanticDataRequired';
 
 export default function ProfileCard(props) {
     const [user, setUser] = useState(props.user)
@@ -408,12 +409,12 @@ npm run dev
 ```
 
 
-#### More features
-This part is not mandatory to implement, it is just to give you an overview of what is possible to do with pivo.
-
+#### Exercise
 These were of course simple changes, but the library allows our application to have convenient behaviors.
 
-For example, the backend provides a way to delete a user, as can be seen in the openApi.json file:
+Now that you have the basics, it is time to do it yourself.
+
+The second version of the backend provides a way to delete a user, as can be seen in the openApi.json file:
 
 ```yml
 /user:
@@ -446,17 +447,46 @@ For example, the backend provides a way to delete a user, as can be seen in the 
       '204':
         description: user deleted
 ```
+Note: the full api specification is [here](backend/v2/data/openapi.yml). The server handles hypermedia controls (with a `_link` attribute in the responses).
 
-> [!NOTE]
-> the delete method is a dummy method, it is just for explanation purposes.
+1. Your first task is to have a button that is shown only if there is a relation between a user and a delete operation:
 
-And since the server handles hypermedia controls (with a `_link` attribute in the responses), in our user ProfileCard, we can have an optional button that can be displayed if a relation to a delete method exists:
- 
+   - Start by exploring the [Documentation](https://github.com/CharlyReux/evolvable-by-design-research/blob/master/experiments/crossover-developers-study/Pivo-documentation.md), and try to find the relevant part that shows how to verify that a relation is available.
+   - The operation requires the semantic relationship of the *delete* operation, that you can find in the OpenAPI specification, by searching for the attribute `x-@relation`, that links the user received from the get operation to the delete operation.
+   - You can now conditionally add a button in the card content in `ProfileCard`, by using materials' `<Button>` component.  
+
+If you have done all of this correctly, if you switch between the two backend implementations, you should see that the button appears only when using the version n°2 of the backend.
+
+
+2. Your second task is now to really call the delete method when clicking on the button.
+   - The first step is to implement the call itself, in the userService.
+     - Create a method `async deleteUser(user)`
+     - In the documentation, you should be able to find how to get an operation from a relation and to infer parameters automatically.
+     - By taking some inspiration from it, you can implement the deleteUser Method. 
+   - You then need to define the deleteUser method in the App.jsx Class, that calls a deleteUser method in the UserService.
+   - Once done, you have to give the method you have just created to the ProfileCard component as a prop, so that it can be called from the component.
+   - Then, add a onclick listener on the button with `onClick={() => props.deleteUser(user)}`
+
+If done correctly, you should be able to delete the user, if you are using the second implementation of the backend.
+
+The solution is given below, but should only be used to verify that you have done it correctly.
+
+<details>
+
+<summary>Spoiler : Solution</summary>
+
+Task 1
+```tsx
+{(user.isRelationAvailable("http://myVoc.org/#rel/delete")) ? <Button>delete User</Button> : ""}
+```
+
+
+Task 2
 ```tsx
 {(user.isRelationAvailable("http://myVoc.org/#rel/delete")) ? <Button onClick={() => deleteUser(user)}>delete User</Button> : ""}
 ```
 
-and a method like this one in our UserService:
+
 ```ts
   async deleteUser(user) {
       const deleteOperation = user.
@@ -476,14 +506,13 @@ and a method like this one in our UserService:
       return response.data;
   }
 ```
-Some other minor changes need to be made in order for this to work, but this can get you an idea of what is possible with this approach.
-
-
-A working implementation of this can be found in the branch `original-implementations/use-with-pivo`
+</details>
 
 ### Conclusion
 
 This is a new paradigm and a new way of developing a UI, but it allows for a better maintainability and less time-consuming changes to be made, especially in the long run.
+
+During the experiment, you will have to switch a lot between the documentation, to find the appropriate methods to use, the specification, to find the different semantic identifiers, and the implementation. 
 
 Answer the tutorial section in the google form, and then, now that you have the basics, You are now ready to start to the study, Head back to https://github.com/CharlyReux/evolvable-by-design-research/tree/master/experiments/crossover-developers-study to get started. 
 

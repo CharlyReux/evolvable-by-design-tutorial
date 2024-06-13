@@ -5,13 +5,16 @@ const fs = require('fs')
 var cors = require('cors')
 const yaml = require('js-yaml')
 
-app.use(cors())
-app.listen(port, () => {
-  console.log(`tutorial backend started on port ${port}`)
-})
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  preflightContinue: true
+}));
 
 
-app.get('/openapi.json', (req, res) => {
+
+app.options('/openapi.json', (req, res) => {
   fs.readFile('data/openapi.yml', 'utf8', (err, data) => {
     jsonOpenAPI = yaml.load(data)
     const back_url = process.env.CODESPACE_NAME ? `https://${process.env.CODESPACE_NAME}-3000.app.github.dev` : "http://localhost:3000"
@@ -22,7 +25,9 @@ app.get('/openapi.json', (req, res) => {
     res.send(jsonOpenAPI)
   })
 })
-
+app.listen(port, () => {
+  console.log(`tutorial backend started on port ${port}`)
+})
 app.get('/users', (req, res) => {
   fs.readFile('data/users.json', 'utf8', (err, data) => {
     res.send(data)

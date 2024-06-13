@@ -27,6 +27,8 @@ paths:
               x-@relation: http://myVoc.org/#rel/delete
               parameters:
                 id: $response.body#/id
+        '404':
+          description: user not found
     delete:
       x-@id: http://myVoc.org/vocab#deleteUser
       summary: deletes a user by its id
